@@ -3,7 +3,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
 const Event = require('./schema/eventSchema')
-const { getAllEvents, getIndividualEvent, postEvent } = require('./controllers/eventsController')
+const { getAllEvents, getIndividualEvent, postEvent, patchEvent } = require('./controllers/eventsController')
 const { handleMongoErrors, customErrors, validationErrors } = require('./errorHandlers/errorHandlers')
 
 async function expressMongoConnection() {
@@ -22,9 +22,11 @@ app.get("/", (req,res) =>{
 
 app.get("/events", getAllEvents)
 
+app.post("/events", postEvent)
+
 app.get("/events/:event_id", getIndividualEvent)
 
-app.post("/events", postEvent)
+app.patch("/events/:event_id", patchEvent)
 
 
 app.all("*", (req,res) => {

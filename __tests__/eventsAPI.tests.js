@@ -62,7 +62,7 @@ describe('Creating RESTful route GET /events to retrieve all events', () => {
 describe('Creating RESTful Route GET /events/:event_id to retrieve single document', () => {
     test('Status 200: Fetches single event by event ID', () => {
         return request(app)
-            .get("/events/678e79fd5d054baa8b9f26dd")
+            .get("/events/678ea2a69e3f9dd60312b273")
             .expect(200)
             .then(({text}) =>{
                 const event = JSON.parse(text)
@@ -81,7 +81,7 @@ describe('Creating RESTful Route GET /events/:event_id to retrieve single docume
             })
     });
 
-    test('Status 400: When the the Object ID is of incorrect length i.e. greater than 24', () => {
+    test('Status 400: When the the event_id (Object ID) is of incorrect length i.e. greater than 24', () => {
         return request(app)
             .get("/events/678d51fc4980701f2e8f99fd20")
             .expect(400)
@@ -91,7 +91,7 @@ describe('Creating RESTful Route GET /events/:event_id to retrieve single docume
             })
     });
 
-    test('Status 404: When the the Object ID has the correct length - 24 characters but the document does not exist in database', () => {
+    test('Status 404: When the the event_id (Object ID) has the correct length - 24 characters but the document does not exist in database', () => {
         return request(app)
             .get("/events/678d51fc4980701f2e8f99ef")
             .expect(404)
@@ -100,7 +100,7 @@ describe('Creating RESTful Route GET /events/:event_id to retrieve single docume
             })
     });
 
-    test('Status 400: error message when the the Object ID does not contain any integer', () => {
+    test('Status 400: error message when the the event_id (Object ID) does not contain any integer', () => {
         return request(app)
             .get("/events/not-a-number")
             .expect(400)
@@ -110,7 +110,7 @@ describe('Creating RESTful Route GET /events/:event_id to retrieve single docume
             })
     });
 
-    test('Status 400: Error message when the the Object ID only contains integer', () => {
+    test('Status 400: Error message when the the event_id (Object ID) only contains integer', () => {
         return request(app)
             .get("/events/947478478474")
             .expect(400)
@@ -191,6 +191,60 @@ describe('Adding new event using POST method /events to the database', () => {
             .then(({text}) => {
                 const parseMessage = JSON.parse(text)
                 expect(parseMessage.msg).toBe("400 Missing Validation")
+            })
+    });
+});
+
+describe('Update a single event using PATCH request /events/:event_id', () => {
+    test('Status 200: Update event with the the matching event_id in the database', () => {
+        const updateEvent = {
+                title: "From Data to Cyber Security: Exploring DMU’s Tech Apprenticeships",
+                date: "Wed, 12 Feb 2025 12:00 - 13:00 GMT",
+                description: "Join us for an exclusive online information session tailored for employers and current technology professionals. This interactive webinar will explore the benefits of higher and degree apprenticeships, focusing on Level 4 Data Analyst, Level 4 Business Analyst, Level 6 Data Scientist, Level 6 Cyber Security Technical Professional, Level 6 Digital and Technology Solutions Technical Professional, Level 6 Digital User Experience (UX) Professional, and Level 7 Artificial Intelligence data specialist apprenticeships.",
+                location: "Leeds",
+                event_img_url: "https://www.securitymagazine.com/ext/resources/images/cyber-products-tech-fp1170x650.jpg?1671553963",
+                price: 25,
+                duration: 1,
+                category: "tech",
+                spaces: 45
+        }
+        return request(app)
+            .patch("/events/678ea2a69e3f9dd60312b265")
+            .send(updateEvent)
+            .expect(200)
+            .then(({text}) => {
+                const parseUpdatedEvent = JSON.parse(text).revisedEvent
+                expect(parseUpdatedEvent.spaces).toBe(45)
+                expect(parseUpdatedEvent.price).toBe(25)
+            })
+    });
+
+    test('Status 400: Error message as the event_id does not exist', () => {
+        const updateEvent = {
+                title: "From Data to Cyber Security: Exploring DMU’s Tech Apprenticeships",
+                spaces: 45
+        }
+        return request(app)
+            .patch("/events/678ea2a69e3f9dd60312b4")
+            .send(updateEvent)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+
+    test('Status 400: Error message as the event_id does not exist', () => {
+        const updateEvent = {
+            title: "From Data to Software engineering: Exploring DMU’s Tech Apprenticeships",
+            spaces: 45
+    }
+        return request(app)
+            .patch("/events/678ea2a69e3f9dd60312b255")
+            .send(updateEvent)
+            .expect(404)
+            .then(({text}) => {
+                expect(text).toBe("404 Route Not Found")
             })
     });
 });
