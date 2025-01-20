@@ -16,3 +16,12 @@ exports.fetchSingleEvent = async (event_id) => {
         throw err
     }
 }
+
+exports.addEventToDatabase = async (title, date, description, location, event_img_url, price, duration, category, spaces) => {
+    try {
+        const newEvent = await Event.create({title: title, date: date, description: description, location: location, event_img_url: event_img_url, price: price, duration: duration, category: category, spaces: spaces})
+        return newEvent
+    } catch (err) {
+        throw err
+    }
+}
