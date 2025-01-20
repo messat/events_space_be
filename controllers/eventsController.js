@@ -1,4 +1,4 @@
-const { fetchAllEvents, fetchSingleEvent } = require("../models/eventsModel")
+const { fetchAllEvents, fetchSingleEvent, addEventToDatabase } = require("../models/eventsModel")
 
 exports.getAllEvents = async (req,res,next) => {
     try {
@@ -23,3 +23,13 @@ exports.getIndividualEvent = async (req,res,next) => {
     }
 }
 
+
+exports.postEvent = async (req,res,next) => {
+    try {
+        const {title, date, description, location, event_img_url, price, duration, category, spaces } = req.body
+        const addEvent = await addEventToDatabase(title, date, description, location, event_img_url, price, duration, category, spaces)
+        res.status(201).send({addEvent})
+    } catch (err) {
+        next(err)
+    }
+}
