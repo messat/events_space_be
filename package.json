@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest __tests__",
-    "start": "nodemon listen.js"
+    "start": "nodemon listen.js",
+    "seed": "node seeds/seeds.js"
   },
   "keywords": [],
   "author": "muhammadessat",

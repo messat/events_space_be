@@ -25,3 +25,15 @@ exports.addEventToDatabase = async (title, date, description, location, event_im
         throw err
     }
 }
+
+exports.updateEvent = async (event_id, incomingUpdate) => {
+    try {
+        const findAndUpdateEvent = await Event.findByIdAndUpdate(event_id, incomingUpdate, {new: true})
+        if(!findAndUpdateEvent){
+            throw {status: 404, msg: "404 Route Not Found"}
+        }
+        return findAndUpdateEvent
+    } catch (err) {
+        throw err
+    }
+}

@@ -1,4 +1,4 @@
-const { fetchAllEvents, fetchSingleEvent, addEventToDatabase } = require("../models/eventsModel")
+const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent } = require("../models/eventsModel")
 
 exports.getAllEvents = async (req,res,next) => {
     try {
@@ -32,4 +32,16 @@ exports.postEvent = async (req,res,next) => {
     } catch (err) {
         next(err)
     }
+}
+
+exports.patchEvent = async (req, res, next) => {
+    try {
+        const {event_id} = req.params
+        const incomingUpdate = req.body
+        const revisedEvent = await updateEvent(event_id, incomingUpdate)
+        res.status(200).send({revisedEvent})
+    } catch (err) {
+        next(err)
+    }
+
 }
