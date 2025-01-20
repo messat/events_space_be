@@ -37,3 +37,15 @@ exports.updateEvent = async (event_id, incomingUpdate) => {
         throw err
     }
 }
+
+exports.deleteEventFromDatabase = async (event_id) => {
+    try {
+        const deleteEvent = await Event.findByIdAndDelete(event_id)
+        if(!deleteEvent){
+            throw deleteEvent
+        }
+        return deleteEvent
+    } catch (err) {
+        throw err
+    }
+}

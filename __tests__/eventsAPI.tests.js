@@ -219,7 +219,7 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
             })
     });
 
-    test('Status 400: Error message as the event_id does not exist', () => {
+    test('Status 400: Error message as the event_id does not exist not conforming to 24 characters (Object ID)', () => {
         const updateEvent = {
                 title: "From Data to Cyber Security: Exploring DMU’s Tech Apprenticeships",
                 spaces: 45
@@ -234,7 +234,7 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
             })
     });
 
-    test('Status 400: Error message as the event_id does not exist', () => {
+    test('Status 400: Error message as the event_id does not exist despite containing 24 characters', () => {
         const updateEvent = {
             title: "From Data to Software engineering: Exploring DMU’s Tech Apprenticeships",
             spaces: 45
@@ -245,6 +245,33 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
             .expect(404)
             .then(({text}) => {
                 expect(text).toBe("404 Route Not Found")
+            })
+    });
+});
+
+
+describe('Delete event using DELETE Route /events/:event_id', () => {
+    test('Status 204: Delete event with no content sent to the server', () => {
+        return request(app)
+            .delete("/events/678ec1c8a0ac89d99208b26e")
+            .expect(204)
+    });
+    test('Status 404: Error message displayed when event_id that does not exist (Object ID) in database', () => {
+        return request(app)
+            .delete("/events/678ec39331f7c3492aa4a376")
+            .expect(404)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("404 Route Not Found")
+            })
+    });
+    test('Status 400: Error message displayed when event_id that does not exist i.e. not an Mongo ID', () => {
+        return request(app)
+            .delete("/events/not-a-number")
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
             })
     });
 });
