@@ -1,4 +1,4 @@
-const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase } = require("../models/eventsModel")
+const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser } = require("../models/eventsModel")
 
 exports.getAllEvents = async (req,res,next) => {
     try {
@@ -54,4 +54,14 @@ exports.deleteEvent = async (req, res, next) => {
         next(err)
     }
 
+}
+
+exports.postUser = async (req, res, next) => {
+    try {
+        const {firstname, lastname, email, username, password} = req.body
+        const addUser = await registerUser(firstname, lastname, email, username, password)
+        res.status(201).send({addUser})
+    } catch (err) {
+        next(err)
+    }
 }

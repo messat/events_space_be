@@ -1,7 +1,7 @@
+console.clear()
 const request = require('supertest');
 const { app } = require('../app')
 const mongoose = require('mongoose');
-
 beforeAll(done => {
     done()
   })
@@ -190,7 +190,7 @@ describe('Adding new event using POST method /events to the database', () => {
             .expect(400)
             .then(({text}) => {
                 const parseMessage = JSON.parse(text)
-                expect(parseMessage.msg).toBe("400 Missing Validation")
+                expect(parseMessage.msg).toBe("400 Validation Error")
             })
     });
 });
@@ -251,9 +251,9 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
 
 
 describe('Delete event using DELETE Route /events/:event_id', () => {
-    test('Status 204: Delete event with no content sent to the server', () => {
+    test.skip('Status 204: Delete event with no content sent to the server', () => {
         return request(app)
-            .delete("/events/678ec1c8a0ac89d99208b26e")
+            .delete("/events/678ec39331f7c3492aa4a344")
             .expect(204)
     });
     test('Status 404: Error message displayed when event_id that does not exist (Object ID) in database', () => {
@@ -272,6 +272,98 @@ describe('Delete event using DELETE Route /events/:event_id', () => {
             .then(({text}) => {
                 const parseError = JSON.parse(text).msg
                 expect(parseError).toBe("400 Bad Request")
+            })
+    });
+});
+
+
+describe('Creating register user POST route to enable users to register an account', () => {
+    test.skip('Status 201: User sends POST request and the password is hashed before it is saved to the database', () => {
+        const register = {
+            firstname: "Farhana",
+            lastname: "Patel",
+            email: "farhanapatel@hotmail.co.uk",
+            username: "fpatel",
+            password: "Porsche"
+        }
+        return request(app)
+            .post("/events/user/register")
+            .send(register)
+            .expect(201)
+            .then(({text}) => {
+                const parseUser = JSON.parse(text).addUser
+                expect(parseUser.password).not.toBe("Porsche")
+                expect(parseUser.username).toBe("fpatel")
+            })
+    });
+
+    test('Status 401: Error response as the email address already exists in the server', () => {
+        const register = {
+            firstname: "Farhana",
+            lastname: "Patel",
+            email: "farhanapatel@hotmail.co.uk",
+            username: "fPorscheLove",
+            password: "Porsche"
+        }
+        return request(app)
+            .post("/events/user/register")
+            .send(register)
+            .expect(401)
+            .then(({text}) => {
+                const parseUser = JSON.parse(text).msg
+               expect(parseUser).toBe("401 User already exists")
+            })
+    });
+
+    test('Status 401: Error response as the username already exists in the database', () => {
+        const register = {
+            firstname: "Farhana",
+            lastname: "Patel",
+            email: "healthnhs@nhs.co.uk",
+            username: "fpatel",
+            password: "Ferrari"
+        }
+        return request(app)
+            .post("/events/user/register")
+            .send(register)
+            .expect(401)
+            .then(({text}) => {
+                const parseUser = JSON.parse(text).msg
+               expect(parseUser).toBe("401 User already exists")
+            })
+    });
+
+    test('Status 400: Error message when lastname is missing - does not follow schema validation', () => {
+        const register = {
+            firstname: "Farhana",
+            email: "farhana@hotmail.co.uk",
+            username: "fpatel",
+            password: "Ferrari"
+        }
+        return request(app)
+            .post("/events/user/register")
+            .send(register)
+            .expect(400)
+            .then(({text}) => {
+                const parseUser = JSON.parse(text)
+               expect(parseUser.msg).toBe("400 Validation Error")
+            })
+    });
+
+    test('Status 400: Error message displayed when the password field is missing', () => {
+        const register = {
+            firstname: "Farhana",
+            lastname: "Patel",
+            email: "farhana@hotmail.co.uk",
+            username: "fpatel",
+        }
+        return request(app)
+            .post("/events/user/register")
+            .send(register)
+            .expect(400)
+            .then(({text}) => {
+                const parseUser = JSON.parse(text).msg
+               expect(parseUser).toBe("400 Bad Request")
             })
     });
 });

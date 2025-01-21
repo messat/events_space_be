@@ -1,4 +1,8 @@
+const e = require("express");
 const Event = require("../schema/eventSchema")
+const User = require("../schema/userSchema")
+const bcrypt = require('bcrypt');
+
 
 exports.fetchAllEvents = async () => {
     const allEvents = await Event.find()
@@ -45,6 +49,17 @@ exports.deleteEventFromDatabase = async (event_id) => {
             throw deleteEvent
         }
         return deleteEvent
+    } catch (err) {
+        throw err
+    }
+}
+
+exports.registerUser = async (firstname, lastname, email, username, password) => {
+    try {
+        const saltRounds = 10;
+        const hashPassword = await bcrypt.hash(password, saltRounds)
+        const newUser = await User.create({firstname: firstname, lastname: lastname, email: email, username: username, password: hashPassword})
+        return newUser
     } catch (err) {
         throw err
     }
