@@ -1,7 +1,7 @@
-console.clear()
 const request = require('supertest');
 const { app } = require('../app')
 const mongoose = require('mongoose');
+const { json } = require('express');
 beforeAll(done => {
     done()
   })
@@ -364,6 +364,83 @@ describe('Creating register user POST route to enable users to register an accou
             .then(({text}) => {
                 const parseUser = JSON.parse(text).msg
                expect(parseUser).toBe("400 Bad Request")
+            })
+    });
+});
+
+
+describe('Login POST route utilised to log in the user', () => {
+    test('Status 200: User successfully logged in', () => {
+        const user = {
+            username: "fpatel",
+            password: "Porsche"
+        }
+        return request(app)
+            .post("/events/user/login")
+            .send(user)
+            .expect(200)
+            .then(({text}) => {
+                const parseLogin = JSON.parse(text).login
+                expect(parseLogin.username).toBe("fpatel")
+                expect(parseLogin.password).not.toBe("Porsche")
+            })
+    });
+
+    test('Status 401: Error message when username not found in the database', () => {
+        const user = {
+            username: "messat",
+            password: "Porsche"
+        }
+        return request(app)
+            .post("/events/user/login")
+            .send(user)
+            .expect(401)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("401 Unauthorised")
+            })
+    });
+
+    test('Status 401: Error message when password entered does not match the hash password in the database', () => {
+        const user = {
+            username: "fpatel",
+            password: "Ferrari"
+        }
+        return request(app)
+            .post("/events/user/login")
+            .send(user)
+            .expect(401)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("401 Unauthorised")
+            })
+    });
+
+    test('Status 401: Unauthorised error message when the password field is missing', () => {
+        const user = {
+            username: "fpatel",
+        }
+        return request(app)
+            .post("/events/user/login")
+            .send(user)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+
+    test('Status 400: Error message when the username field is missing', () => {
+        const user = {
+            password: "Porsche"
+        }
+        return request(app)
+            .post("/events/user/login")
+            .send(user)
+            .expect(401)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("401 Unauthorised")
             })
     });
 });
