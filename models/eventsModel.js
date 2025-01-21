@@ -64,3 +64,21 @@ exports.registerUser = async (firstname, lastname, email, username, password) =>
         throw err
     }
 }
+
+exports.checkLogin = async (username, password) => {
+    try {
+        const findUser = await User.findOne({username: username})
+        if(!findUser){
+            throw {status: 401, msg: "401 Unauthorised"}
+        }
+        // not found username returns null
+        const checkPasswordIsCorrect = await bcrypt.compare(password, findUser.password)
+        if(!checkPasswordIsCorrect){
+            throw {status: 401, msg: "401 Unauthorised"}
+        }
+        // console.log(checkPasswordIsCorrect)
+        return findUser
+    } catch (err) {
+        throw err
+    }
+}

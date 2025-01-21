@@ -1,4 +1,5 @@
 exports.handleMongoErrors = (err, req, res, next) => {
+    
     if(err.name === "Error"){
         res.status(400).send({msg: "400 Bad Request", error: err})
     }
@@ -24,7 +25,9 @@ exports.validationErrors = (err, req, res, next) => {
 exports.customErrors = (err, req, res, next) => {
     if(err.status === 404 && err.msg === "404 Route Not Found"){
         res.status(err.status).send(err.msg)
-    } else {
+    } else if(err.status === 401 && err.msg === "401 Unauthorised"){
+        res.status(err.status).send({msg: err.msg})
+    }else {
         next(err)
     }
 }
