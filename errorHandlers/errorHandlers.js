@@ -1,14 +1,11 @@
 exports.handleMongoErrors = (err, req, res, next) => {
-    
     if(err.name === "Error"){
         res.status(400).send({msg: "400 Bad Request", error: err})
-    }
-    if(err.name === "MongoServerError" && err.errorResponse.code === 11000) {
+    } else if(err.name === "MongoServerError" && err.errorResponse.code === 11000) {
         res.status(401).send({msg: "401 User already exists"})
     } else if(err.reason){
         res.status(400).send({msg: "400 Bad Request"})
-    } 
-    else {
+    } else {
         next(err)   
     }
     }
