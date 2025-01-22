@@ -444,3 +444,78 @@ describe('Login POST route utilised to log in the user', () => {
             })
     });
 });
+
+
+describe('Creating POST Route to register an employee', () => {
+    test.skip('Status 201: Adds employee to the database with hash password and employee Number', () => {
+        const employeeRegister = {
+            firstname: "Yusuf",
+            lastname: "Patel",
+            email: "Yosi63@gmail.com",
+            employeeNumber: 87654231,
+            password: "FerrariF1"
+        }
+        return request(app)
+            .post("/events/employee/register")
+            .send(employeeRegister)
+            .expect(201)
+            .then(({text}) => {
+                const parseEmployeeDetails = JSON.parse(text)
+                expect(parseEmployeeDetails.password).not.toBe("FerrariF1")
+                expect(parseEmployeeDetails.employeeNumber).toBe(87654231)
+                expect(parseEmployeeDetails.lastname).toBe("Patel")
+            })
+    });
+
+    test('Status 400: firstname is missing field with error message', () => {
+        const employeeRegister = {
+            lastname: "Patel",
+            email: "Yosi63@gmail.com",
+            employeeNumber: 87654231,
+            password: "FerrariF1"
+        }
+        return request(app)
+            .post("/events/employee/register")
+            .send(employeeRegister)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Validation Error")
+            })
+    });
+
+    test('Status 400: Email is missing field - fails mongoose validation', () => {
+        const employeeRegister = {
+            firstname: "Yusuf",
+            lastname: "Patel",
+            employeeNumber: 87654231,
+            password: "FerrariF1"
+        }
+        return request(app)
+            .post("/events/employee/register")
+            .send(employeeRegister)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Validation Error")
+            })
+    });
+
+    test('Status 401: Employee number is longer than 8 characters - not valid employee number', () => {
+        const employeeRegister = {
+            firstname: "Yusuf",
+            lastname: "Patel",
+            email: "Yosi63@gmail.com",
+            employeeNumber: 8765423145,
+            password: "FerrariF1"
+        }
+        return request(app)
+            .post("/events/employee/register")
+            .send(employeeRegister)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Validation Error")
+            })
+    });
+});

@@ -2,6 +2,7 @@ const e = require("express");
 const Event = require("../schema/eventSchema")
 const User = require("../schema/userSchema")
 const bcrypt = require('bcrypt');
+const Employee = require("../schema/employeeSchema");
 
 
 exports.fetchAllEvents = async () => {
@@ -71,14 +72,25 @@ exports.checkLogin = async (username, password) => {
         if(!findUser){
             throw {status: 401, msg: "401 Unauthorised"}
         }
-        // not found username returns null
         const checkPasswordIsCorrect = await bcrypt.compare(password, findUser.password)
         if(!checkPasswordIsCorrect){
             throw {status: 401, msg: "401 Unauthorised"}
         }
-        // console.log(checkPasswordIsCorrect)
         return findUser
     } catch (err) {
         throw err
     }
+}
+
+
+exports.employeeRegisterToDatabase = async (firstname, lastname, email, employeeNumber, password) => {
+    try {
+        const saltRounds = 10
+        const hashPassword = await bcrypt.hash(password, saltRounds)
+        const registerEmployee = await Employee.create({firstname: firstname, lastname: lastname, email: email, employeeNumber: employeeNumber, password: hashPassword})
+        return registerEmployee
+    } catch (err) {
+        throw err
+    }
+    
 }
