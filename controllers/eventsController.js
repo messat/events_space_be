@@ -2,9 +2,10 @@ const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, delet
 
 exports.getAllEvents = async (req,res,next) => {
     try {
-        const allEvents = await fetchAllEvents()
+        const { search } = req.query
+        const allEvents = await fetchAllEvents(search)
         res.status(200).send({allEvents: allEvents})
-    } catch {
+    } catch (err){
         next(err)
     }
 }
