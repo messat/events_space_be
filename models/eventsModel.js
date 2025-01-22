@@ -5,9 +5,17 @@ const bcrypt = require('bcrypt');
 const Employee = require("../schema/employeeSchema");
 
 
-exports.fetchAllEvents = async () => {
-    const allEvents = await Event.find()
-    return allEvents
+exports.fetchAllEvents = async (search) => {
+    if(search){
+        const filterEvents = await Event.find({title: { $regex: search, $options: "xi"}})
+        if(!filterEvents.length){
+            return `No Search Found With The Title ${search}`
+        }
+        return filterEvents
+    } else {
+        const allEvents = await Event.find()
+        return allEvents
+    }
 }
 
 exports.fetchSingleEvent = async (event_id) => {
@@ -92,7 +100,6 @@ exports.employeeRegisterToDatabase = async (firstname, lastname, email, employee
     } catch (err) {
         throw err
     }
-    
 }
 
 exports.staffLoginPost = async (employeeNumber, password) => {

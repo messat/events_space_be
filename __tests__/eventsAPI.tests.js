@@ -567,3 +567,26 @@ describe('Creating POST Route to login to the employee account', () => {
             })
     });
 });
+
+
+describe('Filter events by query search using the URL', () => {
+    test('Status 200: A successful search generates an array of events', () => {
+        return request(app)
+            .get("/events?search=cyber")
+            .expect(200)
+            .then(({text}) => {
+                const parseSearch = JSON.parse(text).allEvents
+                expect(parseSearch).toHaveLength(1)
+            })
+    });
+
+    test('Status 200: A search which does not match any events displays a message', () => {
+        return request(app)
+            .get("/events?search=iPhone")
+            .expect(200)
+            .then(({text}) => {
+                const parseSearch = JSON.parse(text).allEvents
+                expect(parseSearch).toBe("No Search Found With The Title iPhone")
+            })
+    });
+});
