@@ -94,3 +94,19 @@ exports.employeeRegisterToDatabase = async (firstname, lastname, email, employee
     }
     
 }
+
+exports.staffLoginPost = async (employeeNumber, password) => {
+    try {
+        const findEmployee = await Employee.findOne({employeeNumber: employeeNumber})
+        if(!findEmployee){
+            throw {status: 401, msg: "401 Unauthorised"}
+        }
+        const comparePassword = await bcrypt.compare(password, findEmployee.password)
+        if(!comparePassword){
+            throw {status: 401, msg: "401 Unauthorised"}
+        }
+        return findEmployee
+    } catch (err) {
+        throw err
+    }
+}
