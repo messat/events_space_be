@@ -519,3 +519,51 @@ describe('Creating POST Route to register an employee', () => {
             })
     });
 });
+
+
+describe('Creating POST Route to login to the employee account', () => {
+    test('Status 201: Employee login successful', () => {
+        const employeeLogin = {
+            employeeNumber: 87654231,
+            password: "FerrariF1"
+        }
+        return request(app)
+            .post("/events/employee/login")
+            .send(employeeLogin)
+            .expect(201)
+            .then(({text}) => {
+                const parseLogin = JSON.parse(text)
+                expect(parseLogin.password).not.toBe(employeeLogin.password)
+                expect(parseLogin.employeeNumber).toBe(employeeLogin.employeeNumber)
+            })
+    });
+
+    test('Status 401: Missing employee number field with an error message response', () => {
+        const employeeLogin = {
+            password: "FerrariF1"
+        }
+        return request(app)
+            .post("/events/employee/login")
+            .send(employeeLogin)
+            .expect(401)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("401 Unauthorised")
+            })
+    });
+
+
+    test('Status 401: Employee number less than 8 characters displaying error message', () => {
+        const employeeLogin = {
+            employeeNumber: 8765423,
+        }
+        return request(app)
+            .post("/events/employee/login")
+            .send(employeeLogin)
+            .expect(401)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("401 Unauthorised")
+            })
+    });
+});
