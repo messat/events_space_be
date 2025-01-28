@@ -133,3 +133,18 @@ exports.signUserToEvent = async (event_id, _id) => {
         throw err
     }
 }
+
+exports.fetchJoinedEventsByUser = async (user_id) => {
+    try {
+        const userJoined = await Event.find({ attendees: user_id }).populate({
+            path: 'attendees',
+            match: {_id: user_id},
+        }).exec()
+        if(!userJoined.length){
+            throw {status: 400, msg: "400 Bad Request"}
+        }
+        return userJoined
+    } catch (err) {
+        throw err
+    }
+}
