@@ -38,6 +38,14 @@ const eventSchema = new Schema({
         type: Number,
         required: true
       },
+    author: { type: Schema.Types.ObjectId, 
+      ref: 'Employee'
+    },
+    attendees: [
+      {
+        type: Schema.Types.ObjectId, ref: 'User'
+      }
+    ]
 })
 
 const Event = mongoose.model('Event', eventSchema)

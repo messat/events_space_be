@@ -52,8 +52,8 @@ describe('Creating RESTful route GET /events to retrieve all events', () => {
             .get("/eventsssss")
             .expect(404)
             .then(({text}) => {
-                const errorMessage = JSON.parse(text)
-                expect(errorMessage.msg).toBe("404 Route Not Found")
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("404 Route Not Found")
             })
     });
 });
@@ -96,7 +96,8 @@ describe('Creating RESTful Route GET /events/:event_id to retrieve single docume
             .get("/events/678d51fc4980701f2e8f99ef")
             .expect(404)
             .then(({text}) => {
-                expect(text).toBe("404 Route Not Found")
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("404 Route Not Found")
             })
     });
 
@@ -244,7 +245,8 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
             .send(updateEvent)
             .expect(404)
             .then(({text}) => {
-                expect(text).toBe("404 Route Not Found")
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("404 Route Not Found")
             })
     });
 });
@@ -587,6 +589,57 @@ describe('Filter events by query search using the URL', () => {
             .then(({text}) => {
                 const parseSearch = JSON.parse(text).allEvents
                 expect(parseSearch).toBe("No Search Found With The Title iPhone")
+            })
+    });
+});
+
+
+describe.only('Signing the user to the event i.e. referencing the user to the event in the Mongo database', () => {
+    test('Status 201: Successfully assigns the user to the event', () => {
+        const user = {_id : "679781c31cd20dd913da719a" }
+        return request(app)
+            .post("/events/signup/678ea2a69e3f9dd60312b265")
+            .send(user)
+            .expect(201)
+            .then(({text}) => {
+                const parseEvent = JSON.parse(text).addUserToEvent
+                expect(parseEvent.attendees).toContain("679781c31cd20dd913da719a")
+            })
+    });
+
+    test('Status 400: Error message when the _id does not match the user in the database when signing up - server side validation', () => {
+        const user = {_id : "679781c31cd20dd913da719q" }
+        return request(app)
+            .post("/events/signup/678ea2a69e3f9dd60312b265")
+            .send(user)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+
+    test('Status 400: Error message when the event_id (parametric endpoint) does not match the event in the database when signing up - server side validation', () => {
+        const user = {_id : "679781c31cd20dd913da719q" }
+        return request(app)
+            .post("/events/signup/678ea2a69e3f9dd60312b265aa")
+            .send(user)
+            .expect(400)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+
+    test('Status 404: Error message when the event_id does not exist in the database but has 24 characters (conforming with Mongo ObjectID)', () => {
+        const user = {_id : "679781c31cd20dd913da719a" }
+        return request(app)
+            .post("/events/signup/678ea2a69e3f9dd60312b215")
+            .send(user)
+            .expect(404)
+            .then(({text}) => {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("404 Route Not Found")
             })
     });
 });

@@ -21,7 +21,7 @@ exports.validationErrors = (err, req, res, next) => {
 
 exports.customErrors = (err, req, res, next) => {
     if(err.status === 404 && err.msg === "404 Route Not Found"){
-        res.status(err.status).send(err.msg)
+        res.status(err.status).send({msg: err.msg})
     } else if(err.status === 401 && err.msg === "401 Unauthorised"){
         res.status(err.status).send({msg: err.msg})
     }else {

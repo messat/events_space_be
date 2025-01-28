@@ -7,13 +7,14 @@ const Employee = require("../schema/employeeSchema");
 
 exports.fetchAllEvents = async (search) => {
     if(search){
-        const filterEvents = await Event.find({title: { $regex: search, $options: "xi"}})
+        search = search.replace(/\s+/g,"\\s+") 
+        const filterEvents = await Event.find({title: { $regex: search, $options: "xism"}})
         if(!filterEvents.length){
             return `No Search Found With The Title ${search}`
         }
         return filterEvents
     } else {
-        const allEvents = await Event.find()
+        const allEvents = await Event.find().populate('author').populate('attendees')
         return allEvents
     }
 }
@@ -30,9 +31,9 @@ exports.fetchSingleEvent = async (event_id) => {
     }
 }
 
-exports.addEventToDatabase = async (title, date, description, location, event_img_url, price, duration, category, spaces) => {
+exports.addEventToDatabase = async (title, date, description, location, event_img_url, price, duration, category, spaces, _id) => {
     try {
-        const newEvent = await Event.create({title: title, date: date, description: description, location: location, event_img_url: event_img_url, price: price, duration: duration, category: category, spaces: spaces})
+        const newEvent = await Event.create({title: title, date: date, description: description, location: location, event_img_url: event_img_url, price: price, duration: duration, category: category, spaces: spaces, author: _id})
         return newEvent
     } catch (err) {
         throw err
@@ -113,6 +114,21 @@ exports.staffLoginPost = async (employeeNumber, password) => {
             throw {status: 401, msg: "401 Unauthorised"}
         }
         return findEmployee
+    } catch (err) {
+        throw err
+    }
+}
+
+exports.signUserToEvent = async (event_id, _id) => {
+    try {
+        const findEventAndSignUpUser = await Event.findById(event_id)
+        if(!findEventAndSignUpUser){
+            throw {status: 404, msg: "404 Route Not Found"}
+        } 
+            findEventAndSignUpUser.attendees.push(_id)
+            findEventAndSignUpUser.spaces = findEventAndSignUpUser.spaces - 1
+            await findEventAndSignUpUser.save()
+            return findEventAndSignUpUser      
     } catch (err) {
         throw err
     }
