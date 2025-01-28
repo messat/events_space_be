@@ -594,7 +594,7 @@ describe('Filter events by query search using the URL', () => {
 });
 
 
-describe.only('Signing the user to the event i.e. referencing the user to the event in the Mongo database', () => {
+describe('Signing the user to the event i.e. referencing the user to the event in the Mongo database', () => {
     test('Status 201: Successfully assigns the user to the event', () => {
         const user = {_id : "679781c31cd20dd913da719a" }
         return request(app)
@@ -640,6 +640,43 @@ describe.only('Signing the user to the event i.e. referencing the user to the ev
             .then(({text}) => {
                 const parseError = JSON.parse(text).msg
                 expect(parseError).toBe("404 Route Not Found")
+            })
+    });
+});
+
+
+describe('User signed up to the event upon clicking sign up button, the user _id is referenced to the employee collection', () => {
+    test('Status: 200 User successfully signs up to the event', () => { 
+        return request(app)
+            .get("/events/user/joined/679781c31cd20dd913da719a")
+            .expect(200)
+            .then(({text})=> {
+                const parseEvents = JSON.parse(text).userJoined
+                parseEvents.forEach((event) => {
+                    expect(event).toMatchObject({
+                    _id: expect.any(String),
+                    title: expect.any(String),
+                    date: expect.any(String),
+                    description: expect.any(String),
+                    location: expect.any(String),
+                    event_img_url: expect.any(String),
+                    price: expect.any(Number),
+                    duration: expect.any(Number),
+                    category: expect.any(String),
+                    spaces: expect.any(Number),
+                    attendees: expect.any(Array)
+                    })
+                })
+            })
+    });
+
+    test.only('Status: 400 Error message as the user_id is not found in the database', () => { 
+        return request(app)
+            .get("/events/user/joined/679781c31cd20dd913da75a")
+            .expect(400)
+            .then(({text})=> {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
             })
     });
 });

@@ -1,4 +1,4 @@
-const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser, checkLogin, employeeRegisterToDatabase, staffLoginPost, signUserToEvent } = require("../models/eventsModel")
+const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser, checkLogin, employeeRegisterToDatabase, staffLoginPost, signUserToEvent, fetchJoinedEventsByUser } = require("../models/eventsModel")
 
 exports.getAllEvents = async (req,res,next) => {
     try {
@@ -107,4 +107,16 @@ exports.signUserToEvent = async (req, res, next) => {
     } catch (err) {
        next(err) 
     }
+}
+
+
+exports.getUserJoinedEvents = async (req, res, next) => {
+    try {
+        const {user_id} = req.params
+        const userJoined = await fetchJoinedEventsByUser(user_id)
+        res.status(200).send({userJoined})
+    } catch (err) {
+        next(err)
+    }
+
 }
