@@ -1,4 +1,4 @@
-const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser, checkLogin, employeeRegisterToDatabase, staffLoginPost } = require("../models/eventsModel")
+const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser, checkLogin, employeeRegisterToDatabase, staffLoginPost, signUserToEvent } = require("../models/eventsModel")
 
 exports.getAllEvents = async (req,res,next) => {
     try {
@@ -27,8 +27,8 @@ exports.getIndividualEvent = async (req,res,next) => {
 
 exports.postEvent = async (req,res,next) => {
     try {
-        const {title, date, description, location, event_img_url, price, duration, category, spaces } = req.body
-        const addEvent = await addEventToDatabase(title, date, description, location, event_img_url, price, duration, category, spaces)
+        const {title, date, description, location, event_img_url, price, duration, category, spaces, _id } = req.body
+        const addEvent = await addEventToDatabase(title, date, description, location, event_img_url, price, duration, category, spaces, _id)
         res.status(201).send({addEvent})
     } catch (err) {
         next(err)
@@ -95,5 +95,16 @@ exports.employeeLogin = async (req, res, next) => {
         res.status(201).send(login)
     } catch (err) {
         next(err)
+    }
+}
+
+exports.signUserToEvent = async (req, res, next) => {
+    try {
+        const {event_id} = req.params
+        const {_id} = req.body
+        const addUserToEvent = await signUserToEvent(event_id, _id)  
+        res.status(201).send({addUserToEvent})
+    } catch (err) {
+       next(err) 
     }
 }

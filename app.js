@@ -2,8 +2,9 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
+const cors = require('cors')
 const Event = require('./schema/eventSchema')
-const { getAllEvents, getIndividualEvent, postEvent, patchEvent, deleteEvent, postUser, postLogin, employeeRegister, employeeLogin } = require('./controllers/eventsController')
+const { getAllEvents, getIndividualEvent, postEvent, patchEvent, deleteEvent, postUser, postLogin, employeeRegister, employeeLogin, signUserToEvent } = require('./controllers/eventsController')
 const { handleMongoErrors, customErrors, validationErrors, serverError } = require('./errorHandlers/errorHandlers')
 
 async function expressMongoConnection() {
@@ -14,6 +15,7 @@ expressMongoConnection()
 .then(() => console.log("Connected to Mongo (Event Space) Database "))
 .catch((err) => console.log(err, "Error, Mongo Database failed to connect"))
 
+app.use(cors())
 app.use(express.json());
 
 app.get("/", (req,res) =>{
@@ -31,6 +33,8 @@ app.post("/events/user/login", postLogin)
 app.post("/events/employee/register", employeeRegister)
 
 app.post("/events/employee/login", employeeLogin)
+
+app.post("/events/signup/:event_id", signUserToEvent)
 
 app.get("/events/:event_id", getIndividualEvent)
 
