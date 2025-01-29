@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
 const cors = require('cors')
 const Event = require('./schema/eventSchema')
-const { getAllEvents, getIndividualEvent, postEvent, patchEvent, deleteEvent, postUser, postLogin, employeeRegister, employeeLogin, signUserToEvent, getUserJoinedEvents } = require('./controllers/eventsController')
+const { getAllEvents, getIndividualEvent, postEvent, patchEvent, deleteEvent, postUser, postLogin, employeeRegister, employeeLogin, signUserToEvent, getUserJoinedEvents, cancelEvent } = require('./controllers/eventsController')
 const { handleMongoErrors, customErrors, validationErrors, serverError } = require('./errorHandlers/errorHandlers')
 
 async function expressMongoConnection() {
@@ -35,6 +35,8 @@ app.post("/events/employee/register", employeeRegister)
 app.post("/events/employee/login", employeeLogin)
 
 app.get("/events/user/joined/:user_id", getUserJoinedEvents)
+
+app.patch("/events/user/cancelevent/:user_id", cancelEvent)
 
 app.post("/events/signup/:event_id", signUserToEvent)
 

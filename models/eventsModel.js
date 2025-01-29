@@ -148,3 +148,12 @@ exports.fetchJoinedEventsByUser = async (user_id) => {
         throw err
     }
 }
+
+exports.userEventCancellation = async (user_id, id, spaces) => {
+    try {
+        const removeUser = await Event.findByIdAndUpdate(id, {spaces: spaces + 1, $pull : {attendees: user_id}}, {new: true})
+        return removeUser
+    } catch (err) {
+        throw err
+    }
+}
