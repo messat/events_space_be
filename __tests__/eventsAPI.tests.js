@@ -670,7 +670,7 @@ describe('User signed up to the event upon clicking sign up button, the user _id
             })
     });
 
-    test.only('Status: 400 Error message as the user_id is not found in the database', () => { 
+    test('Status: 400 Error message as the user_id is not found in the database', () => { 
         return request(app)
             .get("/events/user/joined/679781c31cd20dd913da75a")
             .expect(400)
@@ -680,3 +680,53 @@ describe('User signed up to the event upon clicking sign up button, the user _id
             })
     });
 });
+
+
+describe('User cancels their ticket for the single event', () => {
+    test.skip('Status: 200 Patch request to update the attendees array in a single event - removal of user attendance', () => {
+        const event = {
+            id: "678ea2a69e3f9dd60312b265",
+            spaces: 44
+        }
+        return request(app)
+            .patch("/events/user/cancelevent/679781c31cd20dd913da719a")
+            .send(event)
+            .expect(200)
+            .then(({text})=> {
+                const parseEvents = JSON.parse(text).cancelUserEvent
+                expect(parseEvents.spaces).toBe(45)
+                expect(parseEvents.attendees).not.toContain("678ea2a69e3f9dd60312b265")
+            })
+    });
+
+    test('Status: 400 Error message when the user id does not exist in the users collection database', () => {
+        const event = {
+            id: "678ea2a69e3f9dd60312b265",
+            spaces: 44
+        }
+        return request(app)
+            .patch("/events/user/cancelevent/679781c31cd20dd913719a")
+            .send(event)
+            .expect(400)
+            .then(({text})=> {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+
+    test('Status: 400 Error message when the event id does not exist in the events collection database', () => {
+        const event = {
+            id: "678ea2a69e3f9dd602b265",
+            spaces: 44
+        }
+        return request(app)
+            .patch("/events/user/cancelevent/679781c31cd20dd913719a")
+            .send(event)
+            .expect(400)
+            .then(({text})=> {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+});
+
