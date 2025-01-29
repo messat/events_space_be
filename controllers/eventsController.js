@@ -135,7 +135,7 @@ exports.getEmployeeHostedEvents = async (req, res, next) => {
     try {
         const {employee_id} = req.params
         const employeeHosted = await fetchEmployeeHostedEvents(employee_id)
-        res.status(204).send()
+        res.status(200).send({employeeHosted})
     } catch (err) {
         next(err)
     }
