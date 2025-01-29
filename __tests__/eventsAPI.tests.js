@@ -730,3 +730,22 @@ describe('User cancels their ticket for the single event', () => {
     });
 });
 
+
+describe('Employee cancels the event deleting the single event including foreign keys references to other tables', () => {
+    test.skip('Status 204: Employee deletes the event successfully and the attendees too (foreign key)', () => {
+        return request(app)
+            .delete("/events/employee/deleteevent/6798c7bdf941a80457c39dcb")
+            .expect(204)
+    });
+
+    test('Status 404 Event ID not found in the database from the params', () => {
+        return request(app)
+            .delete("/events/employee/deleteevent/67914b027f7405f3986673")
+            .expect(400)
+            .then(({text})=> {
+                const parseError = JSON.parse(text).msg
+                expect(parseError).toBe("400 Bad Request")
+            })
+    });
+});
+

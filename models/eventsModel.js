@@ -157,3 +157,16 @@ exports.userEventCancellation = async (user_id, id, spaces) => {
         throw err
     }
 }
+
+
+exports.fetchEmployeeHostedEvents = async (employee_id) => {
+    try {
+        const hostedEvents = await Event.find({author: employee_id}).populate({
+            path: 'author',
+            match: {_id: employee_id}
+        }).exec()
+        return hostedEvents
+    } catch (err) {
+        throw err
+    }
+}
