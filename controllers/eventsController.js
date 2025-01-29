@@ -1,4 +1,4 @@
-const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser, checkLogin, employeeRegisterToDatabase, staffLoginPost, signUserToEvent, fetchJoinedEventsByUser, userEventCancellation } = require("../models/eventsModel")
+const { fetchAllEvents, fetchSingleEvent, addEventToDatabase, updateEvent, deleteEventFromDatabase, registerUser, checkLogin, employeeRegisterToDatabase, staffLoginPost, signUserToEvent, fetchJoinedEventsByUser, userEventCancellation, fetchEmployeeHostedEvents } = require("../models/eventsModel")
 
 exports.getAllEvents = async (req,res,next) => {
     try {
@@ -46,11 +46,11 @@ exports.patchEvent = async (req, res, next) => {
     }
 }
 
-exports.deleteEvent = async (req, res, next) => {
+exports.deleteSingleEvent = async (req, res, next) => {
     try {
         const {event_id} = req.params
-        await deleteEventFromDatabase(event_id)
-        res.status(204).send()
+        const deleteEvent = await deleteEventFromDatabase(event_id)
+        res.status(204).send(deleteEvent)
     } catch (err) {
         next(err)
     }
@@ -126,6 +126,16 @@ exports.cancelEvent = async (req, res, next) => {
         const {id, spaces} = req.body
         const cancelUserEvent = await userEventCancellation(user_id, id, spaces)
         res.status(200).send({cancelUserEvent}) 
+    } catch (err) {
+        next(err)
+    }
+}
+
+exports.getEmployeeHostedEvents = async (req, res, next) => {
+    try {
+        const {employee_id} = req.params
+        const employeeHosted = await fetchEmployeeHostedEvents(employee_id)
+        res.status(204).send()
     } catch (err) {
         next(err)
     }
