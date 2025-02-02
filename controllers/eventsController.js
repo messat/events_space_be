@@ -27,8 +27,8 @@ exports.getIndividualEvent = async (req,res,next) => {
 
 exports.postEvent = async (req,res,next) => {
     try {
-        const {title, date, description, location, event_img_url, price, duration, category, spaces, _id } = req.body
-        const addEvent = await addEventToDatabase(title, date, description, location, event_img_url, price, duration, category, spaces, _id)
+        const {title, start, end, description, location, event_img_url, price, duration, category, spaces, _id } = req.body
+        const addEvent = await addEventToDatabase(title, start, end, description, location, event_img_url, price, duration, category, spaces, _id)
         res.status(201).send({addEvent})
     } catch (err) {
         next(err)
@@ -71,7 +71,7 @@ exports.postLogin = async (req, res, next) => {
     try {
         const {username, password} = req.body
         const login = await checkLogin(username, password)
-        res.status(200).send({login})
+        res.status(201).send({login})
     } catch (err) {
         next(err)
     }

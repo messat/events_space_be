@@ -34,7 +34,10 @@ describe('Creating RESTful route GET /events to retrieve all events', () => {
                     expect(event).toMatchObject({
                     _id: expect.any(String),
                     title: expect.any(String),
-                    date: expect.any(String),
+                    start: expect.any(String),
+                    end: expect.any(String),
+                    author: expect.any(Object),
+                    attendees: expect.any(Array),
                     description: expect.any(String),
                     location: expect.any(String),
                     event_img_url: expect.any(String),
@@ -62,14 +65,17 @@ describe('Creating RESTful route GET /events to retrieve all events', () => {
 describe('Creating RESTful Route GET /events/:event_id to retrieve single document', () => {
     test('Status 200: Fetches single event by event ID', () => {
         return request(app)
-            .get("/events/678ea2a69e3f9dd60312b273")
+            .get("/events/679fac79988301d001b92911")
             .expect(200)
             .then(({text}) =>{
                 const event = JSON.parse(text)
                 expect(event.singleEvent).toMatchObject({
                     _id: expect.any(String),
                     title: expect.any(String),
-                    date: expect.any(String),
+                    start: expect.any(String),
+                    end: expect.any(String),
+                    author: expect.any(Object),
+                    attendees: expect.any(Array),
                     description: expect.any(String),
                     location: expect.any(String),
                     event_img_url: expect.any(String),
@@ -127,14 +133,16 @@ describe('Adding new event using POST method /events to the database', () => {
     test('Status 201: Adds new event to the the database', () => {
         const newEvent = {
             title: "Watercolour Brush Lettering",
-            date: "Sat, 25 Jan 2025 10:30 - 13:30 GMT",
+            start: "2025-06-07T13:00:00.000Z",
+            end: "2025-06-07T19:00:00.000Z",
             description: "Brush lettering is such a beautiful and fun lettering form, we will go through an introduction to brush lettering and watercolour- teaching you how to manipulate the brush for various strokes and widths. We’ll go through the alphabet and form words.",
             location: "54 Otley Road Leeds LS6 2AL",
             event_img_url: "https://www.lagebaston.com/wp-content/uploads/2015/05/mixed-media-painting.jpg",
             price: 12,
             duration: 3,
             category: "Art",
-            spaces: 20
+            spaces: 20,
+            author: "67953c2c94a84243590e16e0"
         }
         return request(app)
             .post("/events")
@@ -151,13 +159,15 @@ describe('Adding new event using POST method /events to the database', () => {
     test('Status 201: Ignores fields not included in the event schema and creates a new event', () => { 
         const newEvent = {
             title: "Introduction to Pottery",
-            date: "Sun, 26 Jan 2025 14:00 - 17:00 GMT",
+            start: "2025-06-07T13:00:00.000Z",
+            end: "2025-06-07T19:00:00.000Z",
             description: "Explore the basics of pottery in this hands-on workshop. Learn techniques for shaping and molding clay, and create your own unique piece to take home. Perfect for beginners and anyone looking to try something creative.",
             location: "35 Chapel Street, Manchester M3 5DF",
             event_img_url: "https://www.thesprucecrafts.com/thmb/dp94k5qFzMe9QhtZhFO8K6b2RHg=/1885x1414/smart/filters:no_upscale()/Pottery-wheel-working-gettyimages-147024332-589fdfed5f9b58819c0f876b.jpg",
             price: 25,
             duration: 3,
             category: "Art",
+            author: "67953c2c94a84243590e16e0",
             spaces: 15,
             votes: 10,
             northcoders_rating: 20
@@ -176,7 +186,8 @@ describe('Adding new event using POST method /events to the database', () => {
     test('Status 400: A form field missing - event_img_url - error message', () => {
         const newEvent = {
             title: "Watercolour Brush Lettering",
-            date: "Sat, 25 Jan 2025 10:30 - 13:30 GMT",
+            start: "2025-06-07T19:00:00.000Z",
+            end: "2025-06-07T19:00:00.000Z",
             location: "54 Otley Road Leeds LS6 2AL",
             description: "Hello from mongo shell",
             price: 12,
@@ -200,17 +211,19 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
     test('Status 200: Update event with the the matching event_id in the database', () => {
         const updateEvent = {
                 title: "From Data to Cyber Security: Exploring DMU’s Tech Apprenticeships",
-                date: "Wed, 12 Feb 2025 12:00 - 13:00 GMT",
+                start: "2025-06-07T13:00:00.000Z",
+                end: "2025-06-07T19:00:00.000Z",
                 description: "Join us for an exclusive online information session tailored for employers and current technology professionals. This interactive webinar will explore the benefits of higher and degree apprenticeships, focusing on Level 4 Data Analyst, Level 4 Business Analyst, Level 6 Data Scientist, Level 6 Cyber Security Technical Professional, Level 6 Digital and Technology Solutions Technical Professional, Level 6 Digital User Experience (UX) Professional, and Level 7 Artificial Intelligence data specialist apprenticeships.",
                 location: "Leeds",
                 event_img_url: "https://www.securitymagazine.com/ext/resources/images/cyber-products-tech-fp1170x650.jpg?1671553963",
                 price: 25,
                 duration: 1,
                 category: "tech",
-                spaces: 45
+                spaces: 45,
+                author: "67953c2c94a84243590e16e0"
         }
         return request(app)
-            .patch("/events/678ea2a69e3f9dd60312b265")
+            .patch("/events/679fac79988301d001b92903")
             .send(updateEvent)
             .expect(200)
             .then(({text}) => {
@@ -220,7 +233,7 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
             })
     });
 
-    test('Status 400: Error message as the event_id does not exist not conforming to 24 characters (Object ID)', () => {
+    test('Status 400: Error message as the event_id does not exist not conforming to 24 characters (Object ID) Mongo Errors', () => {
         const updateEvent = {
                 title: "From Data to Cyber Security: Exploring DMU’s Tech Apprenticeships",
                 spaces: 45
@@ -253,9 +266,9 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
 
 
 describe('Delete event using DELETE Route /events/:event_id', () => {
-    test.skip('Status 204: Delete event with no content sent to the server', () => {
+    test('Status 204: Delete event with no content sent to the server', () => {
         return request(app)
-            .delete("/events/678ec39331f7c3492aa4a344")
+            .delete("/events/employee/deleteevent/679fae8d7d5c07ea9ac34778")
             .expect(204)
     });
     test('Status 404: Error message displayed when event_id that does not exist (Object ID) in database', () => {
@@ -267,25 +280,25 @@ describe('Delete event using DELETE Route /events/:event_id', () => {
                 expect(parseError).toBe("404 Route Not Found")
             })
     });
-    test('Status 400: Error message displayed when event_id that does not exist i.e. not an Mongo ID', () => {
+    test('Status 404: Error message displayed when event_id that does not exist', () => {
         return request(app)
             .delete("/events/not-a-number")
-            .expect(400)
+            .expect(404)
             .then(({text}) => {
                 const parseError = JSON.parse(text).msg
-                expect(parseError).toBe("400 Bad Request")
+                expect(parseError).toBe("404 Route Not Found")
             })
     });
 });
 
 
 describe('Creating register user POST route to enable users to register an account', () => {
-    test.skip('Status 201: User sends POST request and the password is hashed before it is saved to the database', () => {
+    test('Status 201: User sends POST request and the password is hashed before it is saved to the database', () => {
         const register = {
             firstname: "Farhana",
             lastname: "Patel",
-            email: "farhanapatel@hotmail.co.uk",
-            username: "fpatel",
+            email: "farhanaessat@icloud.com",
+            username: "Mac",
             password: "Porsche"
         }
         return request(app)
@@ -295,7 +308,7 @@ describe('Creating register user POST route to enable users to register an accou
             .then(({text}) => {
                 const parseUser = JSON.parse(text).addUser
                 expect(parseUser.password).not.toBe("Porsche")
-                expect(parseUser.username).toBe("fpatel")
+                expect(parseUser.username).toBe("Mac")
             })
     });
 
@@ -372,7 +385,7 @@ describe('Creating register user POST route to enable users to register an accou
 
 
 describe('Login POST route utilised to log in the user', () => {
-    test('Status 200: User successfully logged in', () => {
+    test('Status 201: User successfully logged in', () => {
         const user = {
             username: "fpatel",
             password: "Porsche"
@@ -380,7 +393,7 @@ describe('Login POST route utilised to log in the user', () => {
         return request(app)
             .post("/events/user/login")
             .send(user)
-            .expect(200)
+            .expect(201)
             .then(({text}) => {
                 const parseLogin = JSON.parse(text).login
                 expect(parseLogin.username).toBe("fpatel")
@@ -449,12 +462,12 @@ describe('Login POST route utilised to log in the user', () => {
 
 
 describe('Creating POST Route to register an employee', () => {
-    test.skip('Status 201: Adds employee to the database with hash password and employee Number', () => {
+    test('Status 201: Adds employee to the database with hash password and employee Number', () => {
         const employeeRegister = {
             firstname: "Yusuf",
             lastname: "Patel",
-            email: "Yosi63@gmail.com",
-            employeeNumber: 87654231,
+            email: "YosiDino@gmail.com",
+            employeeNumber: 78678676,
             password: "FerrariF1"
         }
         return request(app)
@@ -464,7 +477,7 @@ describe('Creating POST Route to register an employee', () => {
             .then(({text}) => {
                 const parseEmployeeDetails = JSON.parse(text)
                 expect(parseEmployeeDetails.password).not.toBe("FerrariF1")
-                expect(parseEmployeeDetails.employeeNumber).toBe(87654231)
+                expect(parseEmployeeDetails.employeeNumber).toBe(78678676)
                 expect(parseEmployeeDetails.lastname).toBe("Patel")
             })
     });
@@ -472,8 +485,8 @@ describe('Creating POST Route to register an employee', () => {
     test('Status 400: firstname is missing field with error message', () => {
         const employeeRegister = {
             lastname: "Patel",
-            email: "Yosi63@gmail.com",
-            employeeNumber: 87654231,
+            email: "Yosi5663@gmail.com",
+            employeeNumber: 87654241,
             password: "FerrariF1"
         }
         return request(app)
@@ -507,7 +520,7 @@ describe('Creating POST Route to register an employee', () => {
         const employeeRegister = {
             firstname: "Yusuf",
             lastname: "Patel",
-            email: "Yosi63@gmail.com",
+            email: "Yosi5463@gmail.com",
             employeeNumber: 8765423145,
             password: "FerrariF1"
         }
@@ -598,7 +611,7 @@ describe('Signing the user to the event i.e. referencing the user to the event i
     test('Status 201: Successfully assigns the user to the event', () => {
         const user = {_id : "679781c31cd20dd913da719a" }
         return request(app)
-            .post("/events/signup/678ea2a69e3f9dd60312b265")
+            .post("/events/signup/679fae8d7d5c07ea9ac34774")
             .send(user)
             .expect(201)
             .then(({text}) => {
@@ -610,7 +623,7 @@ describe('Signing the user to the event i.e. referencing the user to the event i
     test('Status 400: Error message when the _id does not match the user in the database when signing up - server side validation', () => {
         const user = {_id : "679781c31cd20dd913da719q" }
         return request(app)
-            .post("/events/signup/678ea2a69e3f9dd60312b265")
+            .post("/events/signup/679fae8d7d5c07ea9ac34774")
             .send(user)
             .expect(400)
             .then(({text}) => {
@@ -648,7 +661,7 @@ describe('Signing the user to the event i.e. referencing the user to the event i
 describe('User signed up to the event upon clicking sign up button, the user _id is referenced to the employee collection', () => {
     test('Status: 200 User successfully signs up to the event', () => { 
         return request(app)
-            .get("/events/user/joined/679781c31cd20dd913da719a")
+            .get("/events/user/joined/6795023df669e366f10f6648")
             .expect(200)
             .then(({text})=> {
                 const parseEvents = JSON.parse(text).userJoined
@@ -656,7 +669,9 @@ describe('User signed up to the event upon clicking sign up button, the user _id
                     expect(event).toMatchObject({
                     _id: expect.any(String),
                     title: expect.any(String),
-                    date: expect.any(String),
+                    start: expect.any(String),
+                    end: expect.any(String),
+                    author: expect.any(Object),
                     description: expect.any(String),
                     location: expect.any(String),
                     event_img_url: expect.any(String),
@@ -683,13 +698,13 @@ describe('User signed up to the event upon clicking sign up button, the user _id
 
 
 describe('User cancels their ticket for the single event', () => {
-    test.skip('Status: 200 Patch request to update the attendees array in a single event - removal of user attendance', () => {
+    test('Status: 200 Patch request to update the attendees array in a single event - removal of user attendance', () => {
         const event = {
-            id: "678ea2a69e3f9dd60312b265",
+            id: "679fac79988301d001b92903",
             spaces: 44
         }
         return request(app)
-            .patch("/events/user/cancelevent/679781c31cd20dd913da719a")
+            .patch("/events/user/cancelevent/67953c2c94a84243590e16e0")
             .send(event)
             .expect(200)
             .then(({text})=> {
@@ -732,9 +747,9 @@ describe('User cancels their ticket for the single event', () => {
 
 
 describe('Employee cancels the event deleting the single event including foreign keys references to other tables', () => {
-    test.skip('Status 204: Employee deletes the event successfully and the attendees too (foreign key)', () => {
+    test('Status 204: Employee deletes the event successfully and the attendees too (foreign key)', () => {
         return request(app)
-            .delete("/events/employee/deleteevent/6798c7bdf941a80457c39dcb")
+            .delete("/events/employee/deleteevent/679fae8d7d5c07ea9ac34774")
             .expect(204)
     });
 

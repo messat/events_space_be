@@ -29,14 +29,16 @@ const seedEventDatabase = async () => {
 
         const event = new Event({
             title: eventObj.title,
-            date: eventObj.date,
-            description: eventObj.body,
+            start: eventObj.start,
+            end: eventObj.end,
+            description: eventObj.description,
             location: eventObj.location,
             event_img_url: eventObj.event_img_url,
             price: eventObj.price,
             duration: eventObj.duration,
             category: eventObj.category,
-            spaces: eventObj.spaces
+            spaces: eventObj.spaces,
+            author: eventObj.author
         })
         await event.save()
     }
