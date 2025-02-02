@@ -1,4 +1,3 @@
-const e = require("express");
 const Event = require("../schema/eventSchema")
 const User = require("../schema/userSchema")
 const bcrypt = require('bcrypt');
@@ -21,7 +20,7 @@ exports.fetchAllEvents = async (search) => {
 
 exports.fetchSingleEvent = async (event_id) => {
     try {
-        const individualEvent = await Event.findById(event_id)
+        const individualEvent = await Event.findById(event_id).populate('author')
         if(!individualEvent){
             throw {status: 404, msg: "404 Route Not Found"}
         }
@@ -31,9 +30,9 @@ exports.fetchSingleEvent = async (event_id) => {
     }
 }
 
-exports.addEventToDatabase = async (title, date, description, location, event_img_url, price, duration, category, spaces, _id) => {
+exports.addEventToDatabase = async (title, start, end, description, location, event_img_url, price, duration, category, spaces, _id) => {
     try {
-        const newEvent = await Event.create({title: title, date: date, description: description, location: location, event_img_url: event_img_url, price: price, duration: duration, category: category, spaces: spaces, author: _id})
+        const newEvent = await Event.create({title: title, start: start, end: end, description: description, location: location, event_img_url: event_img_url, price: price, duration: duration, category: category, spaces: spaces, author: _id})
         return newEvent
     } catch (err) {
         throw err
@@ -54,6 +53,7 @@ exports.updateEvent = async (event_id, incomingUpdate) => {
 
 exports.deleteEventFromDatabase = async (event_id) => {
     try {
+        console.log(event_id)
         const deleteEvent = await Event.findByIdAndDelete(event_id)
         if(!deleteEvent){
             throw deleteEvent
@@ -124,7 +124,10 @@ exports.signUserToEvent = async (event_id, _id) => {
         const findEventAndSignUpUser = await Event.findById(event_id)
         if(!findEventAndSignUpUser){
             throw {status: 404, msg: "404 Route Not Found"}
-        } 
+        }
+        if(!_id){
+            throw {status: 400, msg: "400 Bad Request"}
+        }
             findEventAndSignUpUser.attendees.push(_id)
             findEventAndSignUpUser.spaces = findEventAndSignUpUser.spaces - 1
             await findEventAndSignUpUser.save()
@@ -136,13 +139,14 @@ exports.signUserToEvent = async (event_id, _id) => {
 
 exports.fetchJoinedEventsByUser = async (user_id) => {
     try {
+        const findUser = await User.findById(user_id)
+        if(!findUser){
+            throw {status: 400, msg: "400 Bad Request"}
+        }
         const userJoined = await Event.find({ attendees: user_id }).populate({
             path: 'attendees',
             match: {_id: user_id},
         }).exec()
-        if(!userJoined.length){
-            throw {status: 400, msg: "400 Bad Request"}
-        }
         return userJoined
     } catch (err) {
         throw err

@@ -2,7 +2,7 @@ exports.handleMongoErrors = (err, req, res, next) => {
     if(err.name === "Error"){
         res.status(400).send({msg: "400 Bad Request", error: err})
     } else if(err.name === "MongoServerError" && err.errorResponse.code === 11000) {
-        res.status(401).send({msg: "401 User already exists"})
+        res.status(401).send({msg: "401 User already exists", err: err.errorResponse.keyPattern})
     } else if(err.reason){
         res.status(400).send({msg: "400 Bad Request"})
     } else {
@@ -24,7 +24,9 @@ exports.customErrors = (err, req, res, next) => {
         res.status(err.status).send({msg: err.msg})
     } else if(err.status === 401 && err.msg === "401 Unauthorised"){
         res.status(err.status).send({msg: err.msg})
-    }else {
+    } else if(err.status === 400 && err.msg === "400 Bad Request"){
+        res.status(err.status).send({msg: err.msg})
+    } else {
         next(err)
     }
 }
