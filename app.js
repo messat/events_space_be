@@ -71,6 +71,7 @@ app.use(validationErrors)
 
 app.use(serverError)
 
+app.listen(port, () => {
+    console.log(`Listening on Port ${port}`)
+})
 
-
-module.exports = { app, port}
