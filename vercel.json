@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/listen.js",
+      "src": "listen.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/listen.js"
+      "dest": "listen.js"
     }
   ]
 }
