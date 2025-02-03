@@ -43,8 +43,6 @@ app.get("/events/employee/author/:employee_id", getEmployeeHostedEvents)
 app.delete("/events/employee/deleteevent/:event_id", deleteSingleEvent)
 
 
-
-
 app.get("/events/user/joined/:user_id", getUserJoinedEvents)
 
 app.patch("/events/user/cancelevent/:user_id", cancelEvent)
@@ -71,7 +69,7 @@ app.use(validationErrors)
 
 app.use(serverError)
 
-app.listen(port, () => {
-    console.log(`Listening on Port ${port}`)
-})
+
+module.exports = { app, port }
+
 

@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest __tests__",
-    "start": "nodemon listen.js",
+    "start": "nodemon /api/listen.js",
     "seed": "node seeds/seeds.js"
   },
   "keywords": [],
