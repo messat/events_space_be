@@ -1,14 +1,18 @@
+if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config()
+}
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
 const cors = require('cors')
-const Event = require('./schema/eventSchema')
-const { getAllEvents, getIndividualEvent, postEvent, patchEvent, deleteEvent, postUser, postLogin, employeeRegister, employeeLogin, signUserToEvent, getUserJoinedEvents, cancelEvent, getEmployeeHostedEvents, deleteSingleEvent } = require('./controllers/eventsController')
+const { getAllEvents, getIndividualEvent, postEvent, patchEvent, postUser, postLogin, employeeRegister, employeeLogin, signUserToEvent, getUserJoinedEvents, cancelEvent, getEmployeeHostedEvents, deleteSingleEvent } = require('./controllers/eventsController')
 const { handleMongoErrors, customErrors, validationErrors, serverError } = require('./errorHandlers/errorHandlers')
 
+const databaseURL = process.env.NODE_ENV !== "production" ? 'mongodb://127.0.0.1:27017/event_space' : process.env.DB_URL
+
 async function expressMongoConnection() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/event_space')
+        await mongoose.connect(databaseURL)
 }
 
 expressMongoConnection()

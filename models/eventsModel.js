@@ -53,7 +53,6 @@ exports.updateEvent = async (event_id, incomingUpdate) => {
 
 exports.deleteEventFromDatabase = async (event_id) => {
     try {
-        console.log(event_id)
         const deleteEvent = await Event.findByIdAndDelete(event_id)
         if(!deleteEvent){
             throw deleteEvent
