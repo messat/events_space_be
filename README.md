@@ -24,7 +24,7 @@ Before running this project locally, ensure the following are installed:
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/messat/events_space_be.git
-cd event-space-backend
+cd events_space_be
 ```
 
 ### 2. Install dependencies
