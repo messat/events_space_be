@@ -23,7 +23,7 @@ Before running this project locally, ensure the following are installed:
 ## Getting Started
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/event-space-backend.git
+git clone https://github.com/messat/events_space_be.git
 cd event-space-backend
 ```
 
