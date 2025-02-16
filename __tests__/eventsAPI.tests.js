@@ -42,7 +42,7 @@ describe('Creating RESTful route GET /events to retrieve all events', () => {
                     location: expect.any(String),
                     event_img_url: expect.any(String),
                     price: expect.any(Number),
-                    duration: expect.any(Number),
+                    duration: expect.any(String),
                     category: expect.any(String),
                     spaces: expect.any(Number),
                     })
@@ -80,7 +80,7 @@ describe('Creating RESTful Route GET /events/:event_id to retrieve single docume
                     location: expect.any(String),
                     event_img_url: expect.any(String),
                     price: expect.any(Number),
-                    duration: expect.any(Number),
+                    duration: expect.any(String),
                     category: expect.any(String),
                     spaces: expect.any(Number),
                 })
@@ -139,7 +139,7 @@ describe('Adding new event using POST method /events to the database', () => {
             location: "54 Otley Road Leeds LS6 2AL",
             event_img_url: "https://www.lagebaston.com/wp-content/uploads/2015/05/mixed-media-painting.jpg",
             price: 12,
-            duration: 3,
+            duration: "3 hrs",
             category: "Art",
             spaces: 20,
             author: "67953c2c94a84243590e16e0"
@@ -165,7 +165,7 @@ describe('Adding new event using POST method /events to the database', () => {
             location: "35 Chapel Street, Manchester M3 5DF",
             event_img_url: "https://www.thesprucecrafts.com/thmb/dp94k5qFzMe9QhtZhFO8K6b2RHg=/1885x1414/smart/filters:no_upscale()/Pottery-wheel-working-gettyimages-147024332-589fdfed5f9b58819c0f876b.jpg",
             price: 25,
-            duration: 3,
+            duration: "3 hrs",
             category: "Art",
             author: "67953c2c94a84243590e16e0",
             spaces: 15,
@@ -191,7 +191,7 @@ describe('Adding new event using POST method /events to the database', () => {
             location: "54 Otley Road Leeds LS6 2AL",
             description: "Hello from mongo shell",
             price: 12,
-            duration: 3,
+            duration: "3 hrs",
             category: "Art",
             spaces: 20,
             cars: 20
@@ -217,7 +217,7 @@ describe('Update a single event using PATCH request /events/:event_id', () => {
                 location: "Leeds",
                 event_img_url: "https://www.securitymagazine.com/ext/resources/images/cyber-products-tech-fp1170x650.jpg?1671553963",
                 price: 25,
-                duration: 1,
+                duration: "1 hrs",
                 category: "tech",
                 spaces: 45,
                 author: "67953c2c94a84243590e16e0"
@@ -676,7 +676,7 @@ describe('User signed up to the event upon clicking sign up button, the user _id
                     location: expect.any(String),
                     event_img_url: expect.any(String),
                     price: expect.any(Number),
-                    duration: expect.any(Number),
+                    duration: expect.any(String),
                     category: expect.any(String),
                     spaces: expect.any(Number),
                     attendees: expect.any(Array)
