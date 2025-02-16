@@ -7,7 +7,7 @@ const eventsData = [
     location: "Manchester",
     event_img_url: "https://www.securitymagazine.com/ext/resources/images/cyber-products-tech-fp1170x650.jpg?1671553963",
     price: 0,
-    duration: 1,
+    duration: "1 hr",
     category: "tech",
     spaces: 5,
     author: "67953c2c94a84243590e16e0",
@@ -22,7 +22,7 @@ const eventsData = [
     category: "sustainability",
     event_img_url: "https://www.greenqueen.com.hk/wp-content/uploads/2022/10/Untitled-design.jpg",
     price: 20,
-    duration: 4,
+    duration: "4 hrs",
     spaces: 50,
     author: "67953c2c94a84243590e16e0",
     attendees: []
@@ -36,7 +36,7 @@ const eventsData = [
     category: "diversity",
     event_img_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgXt11G2JPgjIJckbddGB5ovHeCyBfFc-bQw&s",
     price: 15,
-    duration: 8,
+    duration: "8 hrs",
     spaces: 30,
     author: "67953c2c94a84243590e16e0",
     attendees: []
@@ -50,7 +50,7 @@ const eventsData = [
     category: "AI",
     event_img_url: "https://miro.medium.com/v2/resize:fit:1200/1*xsir-fypCq_LrbK5jjyN9w.jpeg",
     price: 50,
-    duration: 10,
+    duration: "10 hrs",
     spaces: 100,
     author: "67953c2c94a84243590e16e0",
     attendees: []
@@ -64,7 +64,7 @@ const eventsData = [
     category: "business",
     event_img_url: "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2019/10/business_with_esa/21093947-3-eng-GB/Business_with_ESA_pillars.jpg",
     price: 10,
-    duration: 3,
+    duration: "3 hrs",
     spaces: 20,
     author: "67953c2c94a84243590e16e0",
     attendees: []
@@ -78,7 +78,7 @@ const eventsData = [
     category: "finance",
     event_img_url: "https://blog.board.com/wp-content/uploads/2024/03/2718x1024_Blog_header_Finance-Predictions-2024.jpg",
     price: 25,
-    duration: 5,
+    duration: "5 hrs",
     spaces: 40,
     author: "67953c2c94a84243590e16e0",
     attendees: []
@@ -92,7 +92,7 @@ const eventsData = [
     category: "health",
     event_img_url: "https://www.arabnews.com/sites/default/files/styles/n_670_395/public/2023/06/06/3853316-751551262.jpg?itok=eA_lYUUi",
     price: 30,
-    duration: 8,
+    duration: "8 hrs",
     spaces: 75,
     author: "67953c2c94a84243590e16e0",
     attendees: []
@@ -106,7 +106,7 @@ const eventsData = [
     category: "gaming",
     event_img_url: "https://www.gametechsummit.com/wp-content/uploads/2022/03/meeting-g587e80497_640-1.jpg",
     price: 35,
-    duration: 6,
+    duration: "6 hrs",
     spaces: 60,
     author: "67953c2c94a84243590e16e0",
     attendees: []
